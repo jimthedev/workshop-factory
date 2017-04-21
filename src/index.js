@@ -1,8 +1,11 @@
-var lexer = require('./lexer/javascript');
+const getWGQLComments = require('./lexer/wgql.js');
+const getJavaScriptComments = require('./lexer/javascript.js');
+
 
 // PROGRESS
 // ---------
-// [x] LEXER: FIND COMMENTS
+// [x] LEXER: FIND COMMENTS [X] HTML, [X] CSS, [X] JS
+// [ ] LEXER: Normalize API for all languages
 // [x] LEXER: KEEP ONLY THE COMMENTS THAT ARE WSGQL.
 // [ ] PARSER: SYNTAX TO CHECK FOR UNCLOSED COMMANDS
 // [ ] DETERMINE n NUMBER OF STEPS TO CREATE, Min 1 max N.
@@ -16,7 +19,7 @@ var lexer = require('./lexer/javascript');
 // - CURRENTLY THE COMMENTS EXTRACTION ALGORITH REQUIRES YOUR COMMENTS TO BE ON THEIR OWN LINE
 // - CANNOT STATICALLY ANALYZE
 
-var string = `
+var jsString = `
 
 // Hello there from comment
 console.log('I am not a comment');
@@ -38,4 +41,6 @@ console.log('yoooo'); // ws(end: "show")
 
 `;
 
-lexer(string);
+const jsComments = getJavaScriptComments(jsString);
+console.log(jsComments)
+const wgqlComments = getWGQLComments(jsComments);

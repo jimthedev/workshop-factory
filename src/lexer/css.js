@@ -2,34 +2,6 @@ var _ = require('lodash');
 
 var css = require('css');
 
-const cssString = `
-  /* Before font face */
-  @font-face { /* During font face */
-    font-family: MyHelvetica; /* In font face */
-    src: local("Helvetica Neue Bold"),
-      local("HelveticaNeue-Bold"),
-      url(MgOpenModernaBold.ttf);
-    font-weight: bold;
-  }
-  @supports (--foo: green) { /* comment during supports {}/\ */
-    /*beforemediaquiery*/ @media (max-width: 600px) { /* duringmediaquery */
-      .facet_sidebar {
-        /* Very deep rule */
-        display: none;
-      }
-    } /* Aftermediaquery */
-    body {
-      color: green;
-    }
-    /* SUPPORTS */
-  } /* SAME LINE AS CLOSING SUPPORTS */
-
-  /* Heya */
-  .myclass { /* Hello there */
-    border: 1px solid #fff; /* Yeah me too */
-  }
-`
-
 const isComment = (node) => { return node && node.type==='comment'; };
 
 function traverseForComments(tree) {
@@ -66,12 +38,18 @@ function traverseForComments(tree) {
   return childComments;
 }
 
-const ast = css.parse(cssString);
+const getComments = (str) => {
 
-// Recursively find comments
-const comments = traverseForComments(ast.stylesheet);
+  // Parse
+  const ast = css.parse(str);
 
-// Flatten
-console.log(_.flattenDeep(comments))
+  // Find comments
+  const nestedComments = traverseForComments(ast.stylesheet);
 
-console.assert(comments.length === 13);
+  // Flatten
+  const comments = _.flattenDeep(nestedComments);
+
+  return comments;
+}
+
+module.exports = getComments;
